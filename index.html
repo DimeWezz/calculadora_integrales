@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Integrales</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f5f5f0">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body>
+    <div class="theme-switch-wrapper">
+        <span id="theme-label" class="theme-text">Modo Oscuro</span>
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
+
+    <header class="e-reader-header">
+        <div class="header-center">
+            <h1 class="book-title">TRATADO DE ANÁLISIS MATEMÁTICO</h1>
+        </div>
+    </header>
+
+    <main class="e-reader-page">
+        <div class="page-content">
+            <div class="chapter-title">
+                <span class="chapter-number"></span>
+                <h2>Resolución de Integrales</h2>
+                <div class="ornament">❦</div>
+            </div>
+
+            <div class="calculator-section">
+                <div class="math-paper">
+                    <div class="input-area">
+                        <label class="paper-label">Función a integrar:</label>
+                        <div class="input-wrapper">
+                            <span class="integral-symbol">∫</span>
+                            <input type="text" 
+                                   id="funcion" 
+                                   class="math-input" 
+                                   placeholder="x² + 3x + 2"
+                                   autocomplete="off">
+                            <span class="dx-symbol">dx</span>
+                        </div>
+                    </div>
+
+                    <div class="type-selector">
+                        <button class="type-btn active" data-type="indefinida">
+                            <span class="type-icon">∫</span>
+                            <span class="type-label">Indefinida</span>
+                        </button>
+                        <button class="type-btn" data-type="definida">
+                            <span class="type-icon">∫ₐᵇ</span>
+                            <span class="type-label">Definida</span>
+                        </button>
+                    </div>
+
+                    <div class="template-selector" style="margin-bottom: 20px;">
+                        <label class="paper-label">O elige una estructura común:</label>
+                        <div class="input-wrapper">
+                            <select id="selectPlantilla" class="math-input template-select" onchange="usarEjemplo(this.value)">
+                                <option value="" disabled selected>— Tabla de Integrales Fundamentales —</option>
+                                <optgroup label="Potencias y Polinomios">
+                                    <option value="x^2 + 5x + 6">Trinomio (x² + 5x + 6)</option>
+                                    <option value="x^3">Potencia Simple (x³)</option>
+                                    <option value="1/x^2">Potencia Negativa (1/x²)</option>
+                                    <option value="(x+2)^2">Producto Notable: (x+2)²</option>
+                                </optgroup>
+                                <optgroup label="Trigonométricas">
+                                    <option value="sin(x)">Seno: ∫sin(x)dx</option>
+                                    <option value="cos(x)">Coseno: ∫cos(x)dx</option>
+                                    <option value="tan(x)">Tangente: ∫tan(x)dx</option>
+                                    <option value="sec(x)">Secante: ∫sec(x)dx</option>
+                                    <option value="cot(x)">Cotangente: ∫cot(x)dx</option>
+                                    <option value="sec(x)^2">Secante Cuadrada (Tan)</option>
+                                    <option value="sec(x)*tan(x)">Secante por Tangente</option>
+                                </optgroup>
+                                <optgroup label="Trascendentales">
+                                    <option value="exp(x)">Exponencial (eˣ)</option>
+                                    <option value="ln(x)">Logaritmo Natural</option>
+                                    <option value="1/x">Racional Simple (ln|x|)</option>
+                                    <option value="2^x">Exponencial Base a (2ˣ)</option>
+                                </optgroup>
+                                <optgroup label="Formas Especiales">
+                                    <option value="1/(1+x^2)">Arcotangente: 1/(1+x²)</option>
+                                    <option value="1/sqrt(1-x^2)">Arcoseno: 1/√(1-x²)</option>
+                                    <option value="1/(x^2+9)">Forma: 1/(x²+a²)</option>
+                                    <option value="1/(x^2-4)">Forma: 1/(x²-a²)</option>
+                                    <option value="1/(x^2+6x+13)">Completación: 1/(x²+6x+13)</option>
+                                    <option value="x*exp(x)">Por Partes: x·eˣ</option>
+                                    <option value="sinh(x)">Seno Hiperbólico</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="limitesSection" class="limits-section" style="display: none;">
+                        <div class="limit-field">
+                            <label class="paper-label">Límite inferior:</label>
+                            <input type="text" id="limiteInferior" class="math-input" placeholder="0" value="0">
+                        </div>
+                        <div class="limit-field">
+                            <label class="paper-label">Límite superior:</label>
+                            <input type="text" id="limiteSuperior" class="math-input" placeholder="1" value="1">
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="calculate-btn" onclick="calcularIntegral(false)">
+                            <span class="btn-text">Ver resultado directo</span>
+                            <span class="btn-underline"></span>
+                        </button>
+                        <button class="calculate-btn" onclick="calcularIntegral(true)">
+                            <span class="btn-text">Ver paso a paso</span>
+                            <span class="btn-underline"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="resultadoSection" class="result-section" style="display: none;">
+                    <div class="separator">✧ ✧ ✧</div>
+                    
+                    <div class="result-paper">
+                        <h3 class="result-title">Solución</h3>
+                        <div id="resultadoContenido" class="result-content"></div>
+                        <canvas id="graficaIntegral" class="math-canvas"></canvas>
+                        
+                        <div id="pasosSection" class="steps-section">
+                            <h4 class="steps-title">Desarrollo:</h4>
+                            <div id="pasosContenido" class="steps-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="references-section">
+                    <div class="separator">• • •</div>
+                    <h4 class="references-title">Consultas rápidas</h4>
+                    <div class="reference-chips">
+                        <span class="ref-chip" onclick="usarEjemplo('x^2')">∫x²dx</span>
+                        <span class="ref-chip" onclick="usarEjemplo('sin(x)')">∫sin(x)dx</span>
+                        <span class="ref-chip" onclick="usarEjemplo('cos(x)')">∫cos(x)dx</span>
+                        <span class="ref-chip" onclick="usarEjemplo('e^x')">∫eˣdx</span>
+                        <span class="ref-chip" onclick="usarEjemplo('ln(x)')">∫ln(x)dx</span>
+                        <span class="ref-chip" onclick="usarEjemplo('1/(1+x^2)')">∫1/(1+x²)dx</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-number"></div>
+        </div>
+    </main>
+
+    <footer class="e-reader-footer">
+        <div class="footer-nav">
+            <span class="nav-text">Realizado por Jorge Calderon</span>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js');
+            });
+        }
+    </script>
+</body>
+</html>
